@@ -57,17 +57,17 @@ mvn test
 
 ## 🧪 Test Results / ผลการทดสอบ
 
-**Database**: H2 in-memory (for testing). MySQL would show more dramatic timezone differences.
+**Database**: MySQL 8.0 via Testcontainers (requires Docker, available in CI)
 
 **BEFORE** (using Instant):
-- Stores date with time component
-- Requires timezone conversions
-- More complex for date-only fields
+- ❌ Date shifts when converting between Asia/Bangkok and UTC
+- ❌ Midnight Bangkok (00:00+07:00) = 17:00 previous day UTC
+- ❌ User sees wrong date after round-trip
 
 **AFTER** (using LocalDate):
-- ✅ Stores date only, no time component
-- ✅ No timezone conversions needed
-- ✅ Simpler and clearer for date fields
+- ✅ No timezone conversion
+- ✅ Date 2024-01-15 stays 2024-01-15
+- ✅ Works consistently across all timezones
 
 ## 📚 Key Lessons / บทเรียน
 

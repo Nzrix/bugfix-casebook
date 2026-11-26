@@ -57,17 +57,23 @@ mvn test -Dtest=StockTest
 
 ## 🧪 Test Results / ผลการทดสอบ
 
-**BEFORE**:
-- ❌ 10 concurrent decrements → stock might be 1-9 (unpredictable)
-- ❌ Lost updates occur frequently
+**Database**: MySQL 8.0 via Testcontainers (requires Docker, available in CI)
+**Concurrency**: 20 threads with CountDownLatch, each decrementing by 5
 
-**AFTER (Optimistic Locking)**:
-- ✅ 10 concurrent decrements → stock = 0
-- ✅ `OptimisticLockException` on conflicts, retry succeeds
+**BEFORE** (no version control):
+- ❌ Expected: 100 - (20×5) = 0
+- ❌ Actual: > 0 (lost updates demonstrated)
+- ❌ Read-modify-write race condition proven
 
-**AFTER (Atomic Update)**:
-- ✅ 10 concurrent decrements → stock = 0
-- ✅ Database handles atomicity
+**AFTER (Optimistic Locking with @Version)**:
+- ✅ All 20 operations succeed with retry logic
+- ✅ Final stock = 0 (no lost updates)
+- ✅ OptimisticLockException handled and retried
+
+**AFTER (Atomic SQL UPDATE)**:
+- ✅ UPDATE ... SET quantity = quantity - ? WHERE id = ? AND quantity >= ?
+- ✅ Database-level atomicity
+- ✅ Final stock = 0 guaranteed
 
 ## 📚 Key Lessons / บทเรียน
 

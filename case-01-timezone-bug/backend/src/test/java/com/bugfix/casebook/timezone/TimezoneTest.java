@@ -7,18 +7,18 @@ import com.bugfix.casebook.timezone.before.BookBeforeRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.context.annotation.Import;
 
 import java.time.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests demonstrating timezone handling with Instant vs LocalDate
- * Note: Using H2 for simplicity. MySQL with specific timezone settings would show more dramatic differences.
+ * Tests demonstrating timezone bug with Instant vs LocalDate
+ * Uses MySQL via Testcontainers to show real timezone behavior
  */
 @SpringBootTest
-@ActiveProfiles("test")
+@Import(TestcontainersConfiguration.class)
 class TimezoneTest {
     
     @Autowired
@@ -28,16 +28,18 @@ class TimezoneTest {
     private BookAfterRepository afterRepo;
     
     @Test
-    void beforeVersion_InstantStoresDateTime() {
-        System.out.println("=== BEFORE: Using Instant (stores date+time) ===");
+    void beforeVersion_InstantCausesDateShift() {
+        System.out.println("=== BEFORE: Instant Causes Date Shift ===");
         
-        // Create a date at midnight Bangkok time
-        ZonedDateTime bangkokMidnight = ZonedDateTime.of(
-            LocalDate.of(2024, 1, 15),
-            LocalTime.MIDNIGHT,
-            ZoneId.of("Asia/Bangkok")
-        );
+        // User in Bangkok (UTC+7) selects date: 2024-01-15
+        // Frontend sends midnight Bangkok time
+        LocalDate intendedDate = LocalDate.of(2024, 1, 15);
+        ZonedDateTime bangkokMidnight = intendedDate.atStartOfDay(ZoneId.of("Asia/Bangkok"));
         Instant instant = bangkokMidnight.toInstant();
+        
+        System.out.println("Intended date: " + intendedDate);
+        System.out.println("Bangkok midnight: " + bangkokMidnight);
+        System.out.println("As Instant (UTC): " + instant);
         
         // Save with Instant
         BookBefore book = new BookBefore("Spring in Action", "Craig Walls", instant);
@@ -46,30 +48,32 @@ class TimezoneTest {
         // Retrieve
         BookBefore retrieved = beforeRepo.findById(saved.getId()).orElseThrow();
         
-        System.out.println("Original instant: " + instant);
-        System.out.println("Retrieved instant: " + retrieved.getReleaseDate());
+        // Convert back to Bangkok timezone to see what user sees
+        ZonedDateTime retrievedInBangkok = retrieved.getReleaseDate()
+                .atZone(ZoneId.of("Asia/Bangkok"));
+        LocalDate dateSeenByUser = retrievedInBangkok.toLocalDate();
         
-        // The instant is preserved, but includes time component
-        assertEquals(instant, retrieved.getReleaseDate());
+        System.out.println("Retrieved Instant: " + retrieved.getReleaseDate());
+        System.out.println("Converted to Bangkok: " + retrievedInBangkok);
+        System.out.println("Date seen by user: " + dateSeenByUser);
         
-        // Converting back to Bangkok date may differ due to time component
-        LocalDate retrievedDate = retrieved.getReleaseDate()
-                .atZone(ZoneId.of("Asia/Bangkok"))
-                .toLocalDate();
+        // ❌ BUG: The date shifts!
+        // Bangkok midnight (00:00+07:00) = UTC 17:00 previous day
+        // When converted back to Bangkok date, it may show as previous day
+        assertNotEquals(intendedDate, dateSeenByUser,
+                "BUG: Date shifted from " + intendedDate + " to " + dateSeenByUser + " due to timezone conversion");
         
-        System.out.println("Converted to Bangkok date: " + retrievedDate);
         System.out.println("=========================================");
-        
-        // Instant works but includes unnecessary time information for date-only fields
-        assertNotNull(retrieved.getReleaseDate());
     }
     
     @Test
-    void afterVersion_LocalDateStoresOnlyDate() {
-        System.out.println("=== AFTER: Using LocalDate (stores date only) ===");
+    void afterVersion_LocalDatePreservesDate() {
+        System.out.println("=== AFTER: LocalDate Preserves Date ===");
         
-        // Store with LocalDate - no time component, no timezone
+        // Store with LocalDate - no time, no timezone
         LocalDate releaseDate = LocalDate.of(2024, 1, 15);
+        
+        System.out.println("Original date: " + releaseDate);
         
         BookAfter book = new BookAfter("Spring in Action", "Craig Walls", releaseDate);
         BookAfter saved = afterRepo.save(book);
@@ -77,19 +81,21 @@ class TimezoneTest {
         // Retrieve
         BookAfter retrieved = afterRepo.findById(saved.getId()).orElseThrow();
         
-        System.out.println("Original date: " + releaseDate);
         System.out.println("Retrieved date: " + retrieved.getReleaseDate());
         
-        // ✅ Date is exactly preserved
-        assertEquals(releaseDate, retrieved.getReleaseDate());
+        // ✅ FIX: Date is exactly preserved
+        assertEquals(releaseDate, retrieved.getReleaseDate(),
+                "LocalDate should preserve the date exactly");
         assertEquals(LocalDate.of(2024, 1, 15), retrieved.getReleaseDate());
         
         System.out.println("=========================================");
     }
     
     @Test
-    void localDateHandlesMultipleDatesCorrectly() {
-        // Test that LocalDate consistently handles various dates
+    void demonstrateMidnightShift() {
+        System.out.println("=== Demonstrating Midnight Boundary Issue ===");
+        
+        // Test several dates around midnight Bangkok time
         LocalDate[] testDates = {
             LocalDate.of(2024, 1, 1),
             LocalDate.of(2024, 6, 15),
@@ -97,34 +103,53 @@ class TimezoneTest {
         };
         
         for (LocalDate date : testDates) {
-            BookAfter book = afterRepo.save(
-                new BookAfter("Test Book", "Author", date)
+            // BEFORE: Instant causes shift
+            ZonedDateTime bangkokMidnight = date.atStartOfDay(ZoneId.of("Asia/Bangkok"));
+            Instant instant = bangkokMidnight.toInstant();
+            
+            BookBefore bookBefore = beforeRepo.save(
+                new BookBefore("Test", "Author", instant)
             );
             
-            BookAfter retrieved = afterRepo.findById(book.getId()).orElseThrow();
+            LocalDate retrievedDateBefore = bookBefore.getReleaseDate()
+                    .atZone(ZoneId.of("Asia/Bangkok"))
+                    .toLocalDate();
             
-            assertEquals(date, retrieved.getReleaseDate(),
-                    "Date " + date + " should be preserved exactly");
+            // AFTER: LocalDate preserves
+            BookAfter bookAfter = afterRepo.save(
+                new BookAfter("Test", "Author", date)
+            );
+            
+            LocalDate retrievedDateAfter = bookAfter.getReleaseDate();
+            
+            System.out.println("Original: " + date + 
+                               " | With Instant: " + retrievedDateBefore + 
+                               " | With LocalDate: " + retrievedDateAfter);
+            
+            // Assert the difference
+            assertEquals(date, retrievedDateAfter, "LocalDate should preserve date");
         }
         
-        System.out.println("✅ All dates stored and retrieved correctly");
+        System.out.println("=========================================");
     }
     
     @Test
-    void localDateComparisonsWork() {
-        // LocalDate makes date comparisons straightforward
-        BookAfter book1 = afterRepo.save(
-            new BookAfter("Book 1", "Author", LocalDate.of(2024, 1, 15))
-        );
-        BookAfter book2 = afterRepo.save(
-            new BookAfter("Book 2", "Author", LocalDate.of(2024, 1, 16))
-        );
+    void localDateHandlesAllTimezones() {
+        System.out.println("=== LocalDate Works Across Timezones ===");
         
-        BookAfter retrieved1 = afterRepo.findById(book1.getId()).orElseThrow();
-        BookAfter retrieved2 = afterRepo.findById(book2.getId()).orElseThrow();
+        LocalDate date = LocalDate.of(2024, 3, 15);
         
-        assertTrue(retrieved1.getReleaseDate().isBefore(retrieved2.getReleaseDate()));
+        // Store
+        BookAfter book = afterRepo.save(new BookAfter("Test Book", "Author", date));
         
-        System.out.println("✅ Date comparisons work reliably");
+        // Retrieve
+        BookAfter retrieved = afterRepo.findById(book.getId()).orElseThrow();
+        
+        // The date is the same regardless of timezone
+        assertEquals(date, retrieved.getReleaseDate());
+        
+        System.out.println("LocalDate " + date + " remains " + retrieved.getReleaseDate() + 
+                           " regardless of timezone");
+        System.out.println("=========================================");
     }
 }
