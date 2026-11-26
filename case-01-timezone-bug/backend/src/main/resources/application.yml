@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: timezone-bug-demo
+  
+  datasource:
+    url: jdbc:mysql://localhost:3306/bookstore?serverTimezone=UTC
+    username: root
+    password: rootpass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+  
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: Asia/Bangkok
+
+server:
+  port: 8081
+
+---
+# BEFORE profile - demonstrates the bug
+spring:
+  config:
+    activate:
+      on-profile: before
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+---
+# AFTER profile - the fix (default behavior)
+spring:
+  config:
+    activate:
+      on-profile: after
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Bangkok
