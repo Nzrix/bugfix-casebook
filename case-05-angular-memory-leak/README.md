@@ -43,15 +43,17 @@ Three approaches (all demonstrated):
 
 ## 🏃 How to Run / วิธีรัน
 
+**Backend API** (for Angular examples):
 ```bash
-cd frontend
-npm install
-npm start
-
-# Navigate to http://localhost:4200
-# Open DevTools → Memory/Network tabs
-# Navigate between pages to see the difference
+cd backend
+mvn test  # Test the API
+mvn spring-boot:run  # Run the API server
 ```
+
+**Frontend** (code examples only - no full Angular app):
+- See `frontend/examples/` for TypeScript component examples
+- These demonstrate the patterns without requiring a full Angular build
+- To use in your own project: copy patterns into your Angular components
 
 ## 🧪 Test Results / ผลการทดสอบ
 

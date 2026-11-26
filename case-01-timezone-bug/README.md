@@ -57,13 +57,17 @@ mvn test
 
 ## 🧪 Test Results / ผลการทดสอบ
 
-**BEFORE**:
-- ❌ Date sent as `2024-01-15` is stored and retrieved as `2024-01-14`
-- ❌ Off by exactly 7 hours (Bangkok offset)
+**Database**: H2 in-memory (for testing). MySQL would show more dramatic timezone differences.
 
-**AFTER**:
-- ✅ Date sent as `2024-01-15` is correctly stored and retrieved as `2024-01-15`
-- ✅ No timezone conversion for date-only fields
+**BEFORE** (using Instant):
+- Stores date with time component
+- Requires timezone conversions
+- More complex for date-only fields
+
+**AFTER** (using LocalDate):
+- ✅ Stores date only, no time component
+- ✅ No timezone conversions needed
+- ✅ Simpler and clearer for date fields
 
 ## 📚 Key Lessons / บทเรียน
 

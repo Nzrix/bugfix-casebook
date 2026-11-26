@@ -1,9 +1,9 @@
 # Bug-Fix Casebook Portfolio
 # คลังตัวอย่างการแก้ไข Bug สำหรับ Portfolio
 
-A collection of real-world bug scenarios and their fixes, demonstrating debugging skills and best practices for junior full-stack developers.
+A collection of common bug scenarios and their fixes for learning purposes.
 
-คลังรวมตัวอย่างบัค (Bug) ที่พบได้จริงและวิธีการแก้ไข เพื่อแสดงทักษะการแก้ปัญหาและแนวปฏิบัติที่ดีสำหรับนักพัฒนา Full-Stack มือใหม่
+คลังรวมตัวอย่างบัค (Bug) ทั่วไปและวิธีการแก้ไข สำหรับการเรียนรู้
 
 ## 🛠 Technology Stack
 
@@ -62,21 +62,20 @@ npm start
 
 ## 📖 Learning Objectives
 
-Each case demonstrates:
-- ✅ **Problem Recognition**: How to identify the bug
-- ✅ **Root Cause Analysis**: Why the bug occurs
-- ✅ **Solution Implementation**: How to fix it properly
-- ✅ **Verification**: Testing that proves the fix works
-- ✅ **Best Practices**: Lessons learned and prevention tips
+Each case shows:
+- **Problem**: What the bug looks like
+- **Root Cause**: Why it happens
+- **Solution**: How to fix it
+- **Tests**: Verification that the fix works
+- **Lessons**: What to remember
 
-## 🎯 For Employers & Clients
+## 🎯 Learning Goals
 
-This portfolio demonstrates:
-- Strong debugging methodology
-- Understanding of common pitfalls in Spring Boot and Angular
-- Ability to write clean, testable code
-- Clear communication (bilingual documentation)
-- Production-ready practices (CI/CD, automated testing)
+This portfolio shows:
+- Identifying and fixing common bugs
+- Understanding Spring Boot and Angular issues
+- Writing tests to verify fixes
+- Documenting code in both Thai and English
 
 ## 📝 Documentation Structure
 

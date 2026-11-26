@@ -71,23 +71,21 @@ mvn spring-boot:run
 
 ## 🧪 Test Results / ผลการทดสอบ
 
-**BEFORE**:
-- ❌ 10 authors → 11 queries (1 + 10)
-- ❌ Query time increases linearly with number of authors
-- ❌ Performance degrades severely with large datasets
+**Database**: H2 in-memory for testing. The N+1 problem is most visible with specific configurations and larger datasets.
+
+**BEFORE** (lazy loading):
+- Fetches authors first
+- May trigger additional queries when accessing books
+- Potential performance issue with many authors
 
 **AFTER (Fetch Join)**:
-- ✅ 10 authors → 1 query
-- ✅ Constant query time regardless of author count
-- ✅ Performance improvement: ~90% reduction in query count
+- ✅ Loads authors and books in single JOIN query
+- ✅ No additional queries when accessing collections
+- ✅ Better performance for eager loading scenarios
 
 **AFTER (Entity Graph)**:
-- ✅ 10 authors → 1 query
-- ✅ Declarative, cleaner code
-
-**AFTER (DTO Projection)**:
-- ✅ 10 authors → 1 query
-- ✅ Less memory usage, optimal for read-only operations
+- ✅ Declarative approach using annotations
+- ✅ Similar behavior to fetch join
 
 ## 📚 Key Lessons / บทเรียน
 
