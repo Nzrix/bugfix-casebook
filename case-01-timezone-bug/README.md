@@ -50,26 +50,20 @@ cd backend
 mvn test
 ```
 
-**Note**: Tests use H2 in-memory database for simplicity. For full timezone bug demonstration with MySQL:
-- Start MySQL with `docker-compose up` in this directory
-- Run app with `mvn spring-boot:run`
-- Test with real timezone conversions between Bangkok (UTC+7) and UTC
+**Note**: Tests need no Docker. The BEFORE Instant shift is asserted by switching the JVM default TimeZone between Asia/Bangkok and UTC. LocalDate round-trips use H2.
 
 ## 🧪 Test Results / ผลการทดสอบ
 
-**⚠️ Requires Docker**: Tests use Testcontainers MySQL (Docker available in GitHub Actions CI)
-
-**Database**: MySQL 8.0 via Testcontainers
+**Database**: H2 for LocalDate persistence; BEFORE Instant shift is proven with JVM default TimeZone (UTC vs Asia/Bangkok), no Docker/Testcontainers.
 
 **BEFORE** (using Instant):
-- ❌ Date shifts when converting between Asia/Bangkok and UTC
-- ❌ Midnight Bangkok (00:00+07:00) = 17:00 previous day UTC
-- ❌ User sees wrong date after round-trip
+- ❌ Bangkok calendar date stored as Instant at local midnight becomes previous day under a UTC JVM
+- ❌ Asserted: 2024-01-15 → Instant `2024-01-14T17:00:00Z` → LocalDate 2024-01-14 on UTC JVM
 
 **AFTER** (using LocalDate):
-- ✅ No timezone conversion
-- ✅ Date 2024-01-15 stays 2024-01-15
-- ✅ Works consistently across all timezones
+- ✅ Date 2024-01-15 stays 2024-01-15 in H2
+- ✅ Unchanged when JVM default switches between UTC and Asia/Bangkok
+
 
 ## 📚 Key Lessons / บทเรียน
 

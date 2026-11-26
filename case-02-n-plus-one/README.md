@@ -71,24 +71,17 @@ mvn spring-boot:run
 
 ## 🧪 Test Results / ผลการทดสอบ
 
-**⚠️ Requires Docker**: Tests use Testcontainers MySQL (Docker available in GitHub Actions CI)
-
-**Database**: MySQL 8.0 via Testcontainers  
-**Query Counting**: Hibernate Statistics (enabled in test config)
+**Database**: H2  
+**Query Counting**: Hibernate Statistics (`hibernate.generate_statistics=true`, `prepareStatementCount`)
 
 **BEFORE** (lazy loading):
-- ❌ 11+ queries for 10 authors (1 for authors + 10 for books)
-- ❌ Query count scales linearly: N authors = 1+N queries
-- ❌ Performance degrades with dataset size
+- ❌ Exactly 1+N SQL for N authors (10 authors → 11 statements)
+- ❌ Query count scales linearly with author count
 
 **AFTER (Fetch Join)**:
-- ✅ Exactly 1 query with JOIN for all data
-- ✅ Constant performance regardless of author count
-- ✅ ~91% query reduction (11 → 1)
+- ✅ Exactly 1 SQL statement with JOIN
+- ✅ Books accessible without extra queries
 
-**AFTER (Entity Graph)**:
-- ✅ Same performance as fetch join
-- ✅ Declarative annotation-based approach
 
 ## 📚 Key Lessons / บทเรียน
 

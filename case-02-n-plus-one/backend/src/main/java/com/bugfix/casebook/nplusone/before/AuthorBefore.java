@@ -21,7 +21,7 @@ public class AuthorBefore {
     private String country;
     
     // ❌ BUG: Lazy loading causes additional query per author
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<BookBefore> books = new ArrayList<>();
     
     public AuthorBefore() {}

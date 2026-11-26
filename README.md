@@ -5,97 +5,58 @@ A collection of common bug scenarios and their fixes for learning purposes.
 
 คลังรวมตัวอย่างบัค (Bug) ทั่วไปและวิธีการแก้ไข สำหรับการเรียนรู้
 
-## 🛠 Technology Stack
+## Technology Stack
 
 - **Backend**: Spring Boot 3.2+, Java 17+, Spring Data JPA
-- **Frontend**: Angular 17+
-- **Database**: MySQL 8.0 (Testcontainers for tests - requires Docker)
-- **Testing**: JUnit 5, Mockito, Testcontainers
+- **Frontend**: Angular 17+ (code snippets for Case 05)
+- **Database (tests)**: H2 in-memory (no Docker required)
+- **Testing**: JUnit 5, Hibernate Statistics (Case 02), concurrent ExecutorService (Case 04)
 - **CI/CD**: GitHub Actions
 
-## ⚠️ Testing Requirements
+## Cases Overview
 
-**Cases 1, 2, and 4 require Docker** to run tests locally (they use Testcontainers with MySQL).  
-**GitHub Actions CI has Docker** and runs all tests automatically.
+| Case | Bug Type | How tests run | Tests |
+|------|----------|---------------|-------|
+| [01](./case-01-timezone-bug) | Timezone Issues | JVM TimeZone + H2 LocalDate | 4 |
+| [02](./case-02-n-plus-one) | N+1 Query Problem | H2 + Hibernate Statistics | 3 |
+| [03](./case-03-missing-pagination) | Missing Pagination | H2 | 4 |
+| [04](./case-04-race-condition) | Race Condition | H2 + 20-thread concurrency | 3 |
+| [05](./case-05-angular-memory-leak) | Memory Leak | Backend API + Angular snippets | 1 |
+| [06](./case-06-validation-handling) | Error Handling | H2 / MockMvc | 4 |
 
-For local development without Docker:
-- Cases 3, 5, 6 work without Docker
-- Cases 1, 2, 4 demonstrate the patterns in code but tests need Docker
+## Quick Start
 
-## 📚 Cases Overview
-
-| Case | Bug Type | Technologies | Docker Required |
-|------|----------|--------------|-----------------|
-| [01](./case-01-timezone-bug) | Timezone Issues | Spring Boot, MySQL | Yes (Test containers) |
-| [02](./case-02-n-plus-one) | N+1 Query Problem | Spring Data JPA, MySQL | Yes (Testcontainers) |
-| [03](./case-03-missing-pagination) | Missing Pagination | Spring Boot, JPA | No |
-| [04](./case-04-race-condition) | Race Condition | JPA, Transactions, MySQL | Yes (Testcontainers) |
-| [05](./case-05-angular-memory-leak) | Memory Leak | Angular, RxJS | No |
-| [06](./case-06-validation-handling) | Error Handling | Spring Boot | No |
-
-## 🚀 Quick Start
-
-### Run All Tests (Requires Docker for cases 1,2,4)
+### Run all tests
 
 ```bash
-# Ensure Docker is running
-docker version
-
-# Run all tests
 ./run-all-tests.sh
 ```
 
-### Run Individual Cases
+### Run one case
 
 ```bash
-# Cases WITHOUT Docker requirement (3, 5, 6)
-cd case-03-missing-pagination/backend && mvn test
-cd case-05-angular-memory-leak/backend && mvn test
-cd case-06-validation-handling/backend && mvn test
-
-# Cases WITH Docker requirement (1, 2, 4)
-# Docker must be running
 cd case-01-timezone-bug/backend && mvn test
 cd case-02-n-plus-one/backend && mvn test
+cd case-03-missing-pagination/backend && mvn test
 cd case-04-race-condition/backend && mvn test
+cd case-05-angular-memory-leak/backend && mvn test
+cd case-06-validation-handling/backend && mvn test
 ```
 
-## 📖 Learning Objectives
+No Docker is required for tests. All cases use H2 (Case 01 also proves Instant vs LocalDate with JVM default TimeZone).
 
-Each case shows:
+## What each case shows
+
 - **Problem**: What the bug looks like
 - **Root Cause**: Why it happens
 - **Solution**: How to fix it
-- **Tests**: Verification that the fix works
-- **Lessons**: What to remember
+- **Tests**: BEFORE asserts the bug; AFTER asserts the fix
+- **Lessons**: Short takeaways (Thai + English)
 
-## 🎯 Learning Goals
+## Documentation
 
-This portfolio shows:
-- Identifying and fixing common bugs
-- Understanding Spring Boot and Angular issues
-- Writing tests to verify fixes
-- Documenting code in both Thai and English
+Each case folder has a bilingual README (Thai + English) with symptom, reproduce steps, root cause, fix, verification, and lessons.
 
-## 📝 Documentation Structure
+## CI
 
-Each case includes:
-- **README.md**: Bilingual (Thai/English) explanation
-- **BEFORE version**: Demonstrates the bug
-- **AFTER version**: Shows the fix
-- **Tests**: Automated verification
-- **Lessons Learned**: Key takeaways
-
-## 🔍 CI/CD Status
-
-![CI](https://github.com/Nzrix/bugfix-casebook/workflows/Bug-Fix%20Casebook%20CI/badge.svg)
-
-All tests run automatically on every push via GitHub Actions (Docker available in CI).
-
-## 📧 Contact
-
-This portfolio is maintained for demonstration purposes. All examples use toy domains (bookstore, todo app, etc.) and are entirely original work.
-
----
-
-**Note**: This is a learning portfolio. Cases 1, 2, and 4 require Docker (Testcontainers) for running tests. GitHub Actions CI has Docker and validates all tests automatically.
+GitHub Actions runs `mvn test` for every case on push and pull request.

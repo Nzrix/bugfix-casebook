@@ -1,7 +1,0 @@
-com/bugfix/casebook/validation/ValidationApplication.class
-com/bugfix/casebook/validation/after/UserAfterController.class
-com/bugfix/casebook/validation/UserDTO.class
-com/bugfix/casebook/validation/after/ErrorResponse.class
-com/bugfix/casebook/validation/after/GlobalExceptionHandler.class
-com/bugfix/casebook/validation/after/DuplicateEmailException.class
-com/bugfix/casebook/validation/before/UserBeforeController.class

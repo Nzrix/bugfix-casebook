@@ -1,8 +1,0 @@
-spring:
-  application:
-    name: validation-demo
-
-server:
-  port: 8086
-  error:
-    include-stacktrace: never  # ✅ Never include stack trace in response

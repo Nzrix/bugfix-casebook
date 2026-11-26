@@ -1,7 +1,0 @@
-/workspace/case-01-timezone-bug/backend/src/main/java/com/bugfix/casebook/timezone/before/BookBefore.java
-/workspace/case-01-timezone-bug/backend/src/main/java/com/bugfix/casebook/timezone/after/BookAfterRepository.java
-/workspace/case-01-timezone-bug/backend/src/main/java/com/bugfix/casebook/timezone/TimezoneBugApplication.java
-/workspace/case-01-timezone-bug/backend/src/main/java/com/bugfix/casebook/timezone/before/BookBeforeController.java
-/workspace/case-01-timezone-bug/backend/src/main/java/com/bugfix/casebook/timezone/before/BookBeforeRepository.java
-/workspace/case-01-timezone-bug/backend/src/main/java/com/bugfix/casebook/timezone/after/BookAfterController.java
-/workspace/case-01-timezone-bug/backend/src/main/java/com/bugfix/casebook/timezone/after/BookAfter.java

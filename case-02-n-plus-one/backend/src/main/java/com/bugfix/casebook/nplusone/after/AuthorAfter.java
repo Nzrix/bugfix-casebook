@@ -24,7 +24,7 @@ public class AuthorAfter {
     
     private String country;
     
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<BookAfter> books = new ArrayList<>();
     
     public AuthorAfter() {}

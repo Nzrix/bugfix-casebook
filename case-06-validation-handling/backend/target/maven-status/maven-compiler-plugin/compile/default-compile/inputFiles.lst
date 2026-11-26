@@ -1,5 +1,0 @@
-/workspace/case-06-validation-handling/backend/src/main/java/com/bugfix/casebook/validation/UserDTO.java
-/workspace/case-06-validation-handling/backend/src/main/java/com/bugfix/casebook/validation/before/UserBeforeController.java
-/workspace/case-06-validation-handling/backend/src/main/java/com/bugfix/casebook/validation/after/GlobalExceptionHandler.java
-/workspace/case-06-validation-handling/backend/src/main/java/com/bugfix/casebook/validation/after/UserAfterController.java
-/workspace/case-06-validation-handling/backend/src/main/java/com/bugfix/casebook/validation/ValidationApplication.java
