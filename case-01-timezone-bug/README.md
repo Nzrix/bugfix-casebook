@@ -57,7 +57,9 @@ mvn test
 
 ## 🧪 Test Results / ผลการทดสอบ
 
-**Database**: MySQL 8.0 via Testcontainers (requires Docker, available in CI)
+**⚠️ Requires Docker**: Tests use Testcontainers MySQL (Docker available in GitHub Actions CI)
+
+**Database**: MySQL 8.0 via Testcontainers
 
 **BEFORE** (using Instant):
 - ❌ Date shifts when converting between Asia/Bangkok and UTC

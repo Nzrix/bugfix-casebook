@@ -71,7 +71,9 @@ mvn spring-boot:run
 
 ## 🧪 Test Results / ผลการทดสอบ
 
-**Database**: MySQL 8.0 via Testcontainers (requires Docker, available in CI)
+**⚠️ Requires Docker**: Tests use Testcontainers MySQL (Docker available in GitHub Actions CI)
+
+**Database**: MySQL 8.0 via Testcontainers  
 **Query Counting**: Hibernate Statistics (enabled in test config)
 
 **BEFORE** (lazy loading):

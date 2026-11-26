@@ -57,7 +57,9 @@ mvn test -Dtest=StockTest
 
 ## 🧪 Test Results / ผลการทดสอบ
 
-**Database**: MySQL 8.0 via Testcontainers (requires Docker, available in CI)
+**⚠️ Requires Docker**: Tests use Testcontainers MySQL (Docker available in GitHub Actions CI)
+
+**Database**: MySQL 8.0 via Testcontainers  
 **Concurrency**: 20 threads with CountDownLatch, each decrementing by 5
 
 **BEFORE** (no version control):
