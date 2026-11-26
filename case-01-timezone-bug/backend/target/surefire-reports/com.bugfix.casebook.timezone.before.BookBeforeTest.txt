@@ -1,0 +1,29 @@
+-------------------------------------------------------------------------------
+Test set: com.bugfix.casebook.timezone.before.BookBeforeTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.027 s <<< FAILURE! -- in com.bugfix.casebook.timezone.before.BookBeforeTest
+com.bugfix.casebook.timezone.before.BookBeforeTest.showHowTimezoneConversionCausesDateShift -- Time elapsed: 0.011 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <2024-03-09> but was: <2024-03-10>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+	at com.bugfix.casebook.timezone.before.BookBeforeTest.showHowTimezoneConversionCausesDateShift(BookBeforeTest.java:101)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.bugfix.casebook.timezone.before.BookBeforeTest.demonstrateTimezoneBug -- Time elapsed: 0.005 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: BUG DEMONSTRATED: Date shifted from 2024-01-15 to 2024-01-15 ==> expected: not equal but was: <2024-01-15>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertNotEquals.failEqual(AssertNotEquals.java:277)
+	at org.junit.jupiter.api.AssertNotEquals.assertNotEquals(AssertNotEquals.java:263)
+	at org.junit.jupiter.api.Assertions.assertNotEquals(Assertions.java:2832)
+	at com.bugfix.casebook.timezone.before.BookBeforeTest.demonstrateTimezoneBug(BookBeforeTest.java:64)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

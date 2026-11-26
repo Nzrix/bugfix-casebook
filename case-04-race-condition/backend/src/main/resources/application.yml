@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: race-condition-demo
+  datasource:
+    url: jdbc:mysql://localhost:3306/stockdb
+    username: root
+    password: rootpass
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+server:
+  port: 8084
